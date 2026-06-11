@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seminar Attendance - Geo-Tagged</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .venue-info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .venue-info h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .venue-info p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .status-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .status-checking {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group small {
+            display: block;
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .location-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .location-info strong {
+            color: #667eea;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-checkmark {
+            font-size: 60px;
+            color: #28a745;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📍 Seminar Attendance</h1>
+            <p>Geo-Tagged Check-In System</p>
+        </div>
+        
+        <div class="venue-info">
+            <h3>📌 Venue Location</h3>
+            <p>National University Centre for Oral Health<br>
+            9 Lower Kent Ridge Rd <br>
+            Singapore 119085</p>
+            <p style="margin-top: 8px; font-weight: 500; color: #667eea;">
+                ✓ Must be within 500 meters to check in
+            </p>
+        </div>
+        
+        <div id="statusBox" class="status-box status-checking">
+            <div class="spinner"></div>
+            <p>Checking your location...</p>
+        </div>
+        
+        <form id="attendanceForm" class="hidden">
+            <div class="form-group">
+                <label for="name">Name *</label>
+                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="dcr">DCR Number</label>
+                <input type="text" id="dcr" name="dcr" placeholder="Enter DCR number (if applicable)">
+                <small>Leave blank if not applicable</small>
+            </div>
+            
+            <div id="locationInfo" class="location-info hidden">
+                <p><strong>Your Location:</strong></p>
+                <p id="locationDetails"></p>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                ✓ Submit Attendance
+            </button>
+        </form>
+        
+        <div id="successMessage" class="hidden">
+            <div class="success-checkmark">✓</div>
+            <div class="status-box status-success">
+                <h3 style="margin-bottom: 10px;">Attendance Recorded!</h3>
+                <p>Thank you for checking in. Your attendance has been successfully recorded.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const VENUE_LAT = 1.2933;
+        const VENUE_LNG = 103.7806;
+        const MAX_DISTANCE = 500; // Maximum allowed distance in meters
+        const WEBHOOK_URL = "https://default5ba5ef5e31094e7785bdcfeb0d347e.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1f0f08437bfe4286856c323fe52b3e63/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=goYo_6WVpHTJI5JqchXLgCjUmIISCE47uIaIsERBTFs';
+
+        // DOM Elements
+        const statusBox = document.getElementById('statusBox');
+        const attendanceForm = document.getElementById('attendanceForm');
+        const successMessage = document.getElementById('successMessage');
+        const locationInfo = document.getElementById('locationInfo');
+        const locationDetails = document.getElementById('locationDetails');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let userLocation = null;
+        let distanceFromVenue = null;
+
+        // Calculate distance between two coordinates using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; // Earth's radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return R * c; // Distance in meters
+        }
+
+        // Get user's location
+        function getUserLocation() {
+            if (!navigator.geolocation) {
+                showError('Geolocation is not supported by your browser. Please use a modern browser.');
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        accuracy: position.coords.accuracy
+                    };
+                    
+                    distanceFromVenue = calculateDistance(
+                        VENUE_LAT, 
+                        VENUE_LNG, 
+                        userLocation.lat, 
+                        userLocation.lng
+                    );
+                    
+                    checkLocationValidity();
+                },
+                (error) => {
+                    let errorMessage = 'Unable to retrieve your location. ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Please allow location access to check in.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Location information is unavailable.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Location request timed out.';
+                            break;
+                        default:
+                            errorMessage += 'An unknown error occurred.';
+                    }
+                    showError(errorMessage);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        // Check if user is within acceptable range
+        function checkLocationValidity() {
+            if (distanceFromVenue <= MAX_DISTANCE) {
+                showSuccess();
+            } else {
+                showError(`You are ${Math.round(distanceFromVenue)} meters away from the venue. You must be within ${MAX_DISTANCE} meters to check in.`);
+            }
+        }
+
+        // Show success status and form
+        function showSuccess() {
+            statusBox.className = 'status-box status-success';
+            statusBox.innerHTML = `
+                <p>✓ Location Verified!</p>
+                <p style="font-size: 13px; margin-top: 5px;">You are ${Math.round(distanceFromVenue)} meters from the venue.</p>
+            `;
+            
+            attendanceForm.classList.remove('hidden');
+            locationInfo.classList.remove('hidden');
+            locationDetails.innerHTML = `
+                Distance from venue: <strong>${Math.round(distanceFromVenue)} meters</strong><br>
+                GPS Accuracy: <strong>±${Math.round(userLocation.accuracy)} meters</strong><br>
+                Coordinates: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}
+            `;
+        }
+
+        // Show error status
+        function showError(message) {
+            statusBox.className = 'status-box status-error';
+            statusBox.innerHTML = `<p>✗ ${message}</p>`;
+        }
+
+        // Handle form submission
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                dcr: document.getElementById('dcr').value.trim() || 'N/A',
+                latitude: userLocation.lat,
+                longitude: userLocation.lng,
+                distance: Math.round(distanceFromVenue),
+                accuracy: Math.round(userLocation.accuracy),
+                timestamp: new Date().toISOString(),
+                localTime: new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
+                status: 'Verified'
+            };
+            
+            try {
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    attendanceForm.classList.add('hidden');
+                    statusBox.classList.add('hidden');
+                    successMessage.classList.remove('hidden');
+                } else {
+                    throw new Error('Failed to submit attendance');
+                }
+            } catch (error) {
+                alert('Error submitting attendance. Please try again or contact the organizer.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✓ Submit Attendance';
+            }
+        });
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            getUserLocation();
+        });
+    </script>
+</body>
+</html>
