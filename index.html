@@ -2,417 +2,576 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seminar Attendance - Geo-Tagged</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seminar Attendance - Geo-Verified</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0d2137 100%);
             min-height: 100vh;
-            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
-        
         .container {
-            background: white;
+            background: rgba(255,255,255,0.97);
             border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 500px;
+            padding: 30px 25px;
+            max-width: 420px;
             width: 100%;
-            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        
         .header {
             text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .header h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .venue-info {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 15px;
             margin-bottom: 25px;
-            border-radius: 5px;
         }
-        
-        .venue-info h3 {
-            color: #333;
-            font-size: 16px;
-            margin-bottom: 8px;
+        .header h1 {
+            font-size: 22px;
+            color: #1a3a5c;
+            margin-bottom: 5px;
         }
-        
-        .venue-info p {
-            color: #666;
+        .header p {
             font-size: 13px;
-            line-height: 1.6;
+            color: #666;
         }
-        
-        .status-box {
+        .venue-box {
+            background: #f0f7ff;
+            border: 1px solid #b3d4fc;
+            border-radius: 12px;
             padding: 15px;
-            border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
-            font-weight: 500;
         }
-        
-        .status-checking {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
+        .venue-box h3 {
+            color: #1a3a5c;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
-        
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .venue-box p {
+            color: #555;
+            font-size: 12px;
         }
-        
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .venue-box .radius {
+            color: #0066cc;
+            font-weight: 600;
+            font-size: 12px;
+            margin-top: 6px;
         }
-        
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+
+        /* ============ PERMISSION SCREEN ============ */
+        .permission-screen {
+            text-align: center;
+            padding: 20px 10px;
         }
-        
-        .form-group {
+        .permission-screen .icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        .permission-screen h2 {
+            font-size: 20px;
+            color: #1a3a5c;
+            margin-bottom: 10px;
+        }
+        .permission-screen p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .permission-screen .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
             margin-bottom: 20px;
         }
-        
-        .form-group label {
-            display: block;
-            color: #333;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .form-group small {
-            display: block;
-            color: #999;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .permission-btn {
+            background: linear-gradient(135deg, #0066cc, #0044aa);
             color: white;
             border: none;
-            border-radius: 10px;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .permission-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,102,204,0.4);
+        }
+        .permission-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ============ LOCATING SCREEN ============ */
+        .locating-screen {
+            text-align: center;
+            padding: 30px 10px;
+            display: none;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .locating-screen h2 {
+            font-size: 18px;
+            color: #1a3a5c;
+            margin-bottom: 8px;
+        }
+        .locating-screen p {
+            font-size: 13px;
+            color: #777;
+        }
+        .locating-screen .tip {
+            font-size: 12px;
+            color: #999;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* ============ ERROR SCREEN ============ */
+        .error-screen {
+            text-align: center;
+            padding: 20px 10px;
+            display: none;
+        }
+        .error-screen .icon { font-size: 50px; margin-bottom: 15px; }
+        .error-screen h2 { font-size: 18px; color: #cc3333; margin-bottom: 10px; }
+        .error-screen p { font-size: 13px; color: #555; margin-bottom: 8px; line-height: 1.5; }
+        .error-screen .error-detail {
+            background: #fff5f5;
+            border: 1px solid #ffcccc;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: #cc3333;
+            text-align: left;
+        }
+        .error-screen .steps {
+            text-align: left;
+            font-size: 13px;
+            color: #555;
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        .retry-btn {
+            background: linear-gradient(135deg, #cc3333, #aa2222);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
         }
-        
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .submit-btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-        }
-        
-        .location-info {
-            background: #e8f4f8;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #333;
-        }
-        
-        .location-info strong {
-            color: #667eea;
-        }
-        
-        .hidden {
+
+        /* ============ TOO FAR SCREEN ============ */
+        .toofar-screen {
+            text-align: center;
+            padding: 20px 10px;
             display: none;
         }
-        
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        .toofar-screen .icon { font-size: 50px; margin-bottom: 15px; }
+        .toofar-screen h2 { font-size: 18px; color: #e67700; margin-bottom: 10px; }
+        .toofar-screen p { font-size: 14px; color: #555; margin-bottom: 8px; }
+        .toofar-screen .distance-display {
+            background: #fff8ee;
+            border: 1px solid #ffd699;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .toofar-screen .distance-display .big {
+            font-size: 36px;
+            font-weight: 800;
+            color: #e67700;
         }
-        
-        .success-checkmark {
-            font-size: 60px;
-            color: #28a745;
+        .toofar-screen .distance-display .label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* ============ FORM SCREEN ============ */
+        .form-screen {
+            display: none;
+        }
+        .verified-badge {
+            background: linear-gradient(135deg, #00a86b, #008855);
+            color: white;
+            border-radius: 12px;
+            padding: 14px;
             text-align: center;
-            margin: 20px 0;
+            margin-bottom: 20px;
+        }
+        .verified-badge .check { font-size: 28px; }
+        .verified-badge .text { font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .verified-badge .dist { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        .form-group label .optional {
+            font-weight: 400;
+            color: #999;
+            font-size: 12px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #00a86b, #008855);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ============ SUCCESS SCREEN ============ */
+        .success-screen {
+            text-align: center;
+            padding: 30px 10px;
+            display: none;
+        }
+        .success-screen .icon { font-size: 60px; margin-bottom: 15px; }
+        .success-screen h2 { font-size: 22px; color: #00a86b; margin-bottom: 10px; }
+        .success-screen p { font-size: 14px; color: #555; margin-bottom: 5px; }
+        .success-screen .time {
+            font-size: 13px;
+            color: #888;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📍 Seminar Attendance</h1>
-            <p>Geo-Tagged Check-In System</p>
+            <h1>📋 Seminar Attendance</h1>
+            <p>Geo-Verified Check-In System</p>
         </div>
-        
-        <div class="venue-info">
-            <h3>📌 Venue Location</h3>
-            <p>National University Centre for Oral Health<br>
-            9 Lower Kent Ridge Rd <br>
-            Singapore 119085</p>
-            <p style="margin-top: 8px; font-weight: 500; color: #667eea;">
-                ✓ Must be within 500 meters to check in
-            </p>
+
+        <div class="venue-box">
+            <h3>📍 National University Centre for Oral Health</h3>
+            <p>9 Lower Kent Ridge Rd, #10-01, Singapore 119085</p>
+            <p class="radius">✓ Must be within 500 meters to check in</p>
         </div>
-        
-        <div id="statusBox" class="status-box status-checking">
-            <div class="spinner"></div>
-            <p>Checking your location...</p>
-        </div>
-        
-        <form id="attendanceForm" class="hidden">
-            <div class="form-group">
-                <label for="name">Name *</label>
-                <input type="text" id="name" name="name" required placeholder="Enter your full name">
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="dcr">DCR Number</label>
-                <input type="text" id="dcr" name="dcr" placeholder="Enter DCR number (if applicable)">
-                <small>Leave blank if not applicable</small>
-            </div>
-            
-            <div id="locationInfo" class="location-info hidden">
-                <p><strong>Your Location:</strong></p>
-                <p id="locationDetails"></p>
-            </div>
-            
-            <button type="submit" class="submit-btn" id="submitBtn">
-                ✓ Submit Attendance
+
+        <!-- ========== SCREEN 1: PERMISSION REQUEST ========== -->
+        <div id="permissionScreen" class="permission-screen">
+            <div class="icon">📍</div>
+            <h2>Location Access Required</h2>
+            <p>To verify your onsite attendance, we need to check your current location.</p>
+            <p>Your location data is only used to confirm you are at the venue. It is not stored or shared.</p>
+            <p class="note">🔒 A browser popup will appear asking for permission.<br>Please tap <strong>"Allow"</strong> to continue.</p>
+            <button class="permission-btn" onclick="requestLocation()">
+                📍 Enable Location & Check In
             </button>
-        </form>
-        
-        <div id="successMessage" class="hidden">
-            <div class="success-checkmark">✓</div>
-            <div class="status-box status-success">
-                <h3 style="margin-bottom: 10px;">Attendance Recorded!</h3>
-                <p>Thank you for checking in. Your attendance has been successfully recorded.</p>
+        </div>
+
+        <!-- ========== SCREEN 2: LOCATING ========== -->
+        <div id="locatingScreen" class="locating-screen">
+            <div class="spinner"></div>
+            <h2>📡 Detecting Your Location...</h2>
+            <p>Please wait while we verify your position.</p>
+            <p class="tip">💡 Tip: Move near a window or go outdoors for better GPS signal.</p>
+        </div>
+
+        <!-- ========== SCREEN 3: ERROR ========== -->
+        <div id="errorScreen" class="error-screen">
+            <div class="icon">⚠️</div>
+            <h2>Location Access Failed</h2>
+            <div id="errorDetail" class="error-detail"></div>
+            <div id="errorSteps" class="steps"></div>
+            <button class="retry-btn" onclick="retryLocation()">🔄 Try Again</button>
+        </div>
+
+        <!-- ========== SCREEN 4: TOO FAR ========== -->
+        <div id="toofarScreen" class="toofar-screen">
+            <div class="icon">📏</div>
+            <h2>You Are Too Far From the Venue</h2>
+            <p>You must be within <strong>500 meters</strong> of the venue to check in.</p>
+            <div class="distance-display">
+                <div class="label">Your current distance</div>
+                <div id="farDistance" class="big">---</div>
+                <div class="label">meters away</div>
             </div>
+            <p>Please move closer to the venue and try again.</p>
+            <button class="retry-btn" onclick="retryLocation()">🔄 Check Again</button>
+        </div>
+
+        <!-- ========== SCREEN 5: ATTENDANCE FORM ========== -->
+        <div id="formScreen" class="form-screen">
+            <div class="verified-badge">
+                <div class="check">✅</div>
+                <div class="text">Location Verified!</div>
+                <div id="distText" class="dist"></div>
+            </div>
+
+            <form id="attendanceForm" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label>Full Name <span style="color:red">*</span></label>
+                    <input type="text" id="nameInput" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address <span style="color:red">*</span></label>
+                    <input type="email" id="emailInput" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>DCR Number <span class="optional">(If applicable)</span></label>
+                    <input type="text" id="dcrInput" placeholder="Enter your DCR number">
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    ✅ Submit Attendance
+                </button>
+            </form>
+        </div>
+
+        <!-- ========== SCREEN 6: SUCCESS ========== -->
+        <div id="successScreen" class="success-screen">
+            <div class="icon">🎉</div>
+            <h2>Attendance Recorded!</h2>
+            <p id="successName"></p>
+            <p id="successEmail"></p>
+            <p class="time" id="successTime"></p>
         </div>
     </div>
 
     <script>
-        // Configuration
+        // ============ CONFIGURATION ============
         const VENUE_LAT = 1.2933;
         const VENUE_LNG = 103.7806;
-        const MAX_DISTANCE = 500; // Maximum allowed distance in meters
-        const WEBHOOK_URL = "https://default5ba5ef5e31094e7785bdcfeb0d347e.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1f0f08437bfe4286856c323fe52b3e63/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=goYo_6WVpHTJI5JqchXLgCjUmIISCE47uIaIsERBTFs';
+        const MAX_DISTANCE = 500; // meters
+        const WEBHOOK_URL = 'https://default5ba5ef5e31094e7785bdcfeb0d347e.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/1f0f08437bfe4286856c323fe52b3e63/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=goYo_6WVpHTJI5JqchXLgCjUmIISCE47uIaIsERBTFs';
 
-        // DOM Elements
-        const statusBox = document.getElementById('statusBox');
-        const attendanceForm = document.getElementById('attendanceForm');
-        const successMessage = document.getElementById('successMessage');
-        const locationInfo = document.getElementById('locationInfo');
-        const locationDetails = document.getElementById('locationDetails');
-        const submitBtn = document.getElementById('submitBtn');
+        // ============ VARIABLES ============
+        let userLat = null;
+        let userLng = null;
+        let userDistance = null;
+        let gpsAccuracy = null;
 
-        let userLocation = null;
-        let distanceFromVenue = null;
-
-        // Calculate distance between two coordinates using Haversine formula
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // Earth's radius in meters
-            const φ1 = lat1 * Math.PI / 180;
-            const φ2 = lat2 * Math.PI / 180;
-            const Δφ = (lat2 - lat1) * Math.PI / 180;
-            const Δλ = (lon2 - lon1) * Math.PI / 180;
-
-            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                    Math.cos(φ1) * Math.cos(φ2) *
-                    Math.sin(Δλ/2) * Math.sin(Δλ/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-            return R * c; // Distance in meters
+        // ============ SCREEN MANAGEMENT ============
+        function showScreen(screenId) {
+            const screens = ['permissionScreen', 'locatingScreen', 'errorScreen', 'toofarScreen', 'formScreen', 'successScreen'];
+            screens.forEach(id => {
+                document.getElementById(id).style.display = 'none';
+            });
+            document.getElementById(screenId).style.display = 'block';
         }
 
-        // Get user's location
-        function getUserLocation() {
+        // ============ DISTANCE CALCULATION ============
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371000;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // ============ REQUEST LOCATION ============
+        function requestLocation() {
+            // Check if geolocation is supported
             if (!navigator.geolocation) {
-                showError('Geolocation is not supported by your browser. Please use a modern browser.');
+                showError('NOT_SUPPORTED', 'Your browser does not support GPS/location services.');
                 return;
             }
 
+            // Show locating screen
+            showScreen('locatingScreen');
+
+            // Request location - this triggers the browser permission popup
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                        accuracy: position.coords.accuracy
-                    };
-                    
-                    distanceFromVenue = calculateDistance(
-                        VENUE_LAT, 
-                        VENUE_LNG, 
-                        userLocation.lat, 
-                        userLocation.lng
-                    );
-                    
-                    checkLocationValidity();
-                },
-                (error) => {
-                    let errorMessage = 'Unable to retrieve your location. ';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += 'Please allow location access to check in.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += 'Location information is unavailable.';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += 'Location request timed out.';
-                            break;
-                        default:
-                            errorMessage += 'An unknown error occurred.';
-                    }
-                    showError(errorMessage);
-                },
+                onLocationSuccess,
+                onLocationError,
                 {
                     enableHighAccuracy: true,
-                    timeout: 10000,
+                    timeout: 30000,
                     maximumAge: 0
                 }
             );
         }
 
-        // Check if user is within acceptable range
-        function checkLocationValidity() {
-            if (distanceFromVenue <= MAX_DISTANCE) {
-                showSuccess();
+        // ============ LOCATION SUCCESS ============
+        function onLocationSuccess(position) {
+            userLat = position.coords.latitude;
+            userLng = position.coords.longitude;
+            gpsAccuracy = Math.round(position.coords.accuracy);
+            userDistance = Math.round(calculateDistance(userLat, userLng, VENUE_LAT, VENUE_LNG));
+
+            if (userDistance <= MAX_DISTANCE) {
+                // Within range - show form
+                document.getElementById('distText').textContent =
+                    'You are ' + userDistance + 'm from venue (Accuracy: ±' + gpsAccuracy + 'm)';
+                showScreen('formScreen');
             } else {
-                showError(`You are ${Math.round(distanceFromVenue)} meters away from the venue. You must be within ${MAX_DISTANCE} meters to check in.`);
+                // Too far - show distance
+                document.getElementById('farDistance').textContent = userDistance.toLocaleString();
+                showScreen('toofarScreen');
             }
         }
 
-        // Show success status and form
-        function showSuccess() {
-            statusBox.className = 'status-box status-success';
-            statusBox.innerHTML = `
-                <p>✓ Location Verified!</p>
-                <p style="font-size: 13px; margin-top: 5px;">You are ${Math.round(distanceFromVenue)} meters from the venue.</p>
-            `;
-            
-            attendanceForm.classList.remove('hidden');
-            locationInfo.classList.remove('hidden');
-            locationDetails.innerHTML = `
-                Distance from venue: <strong>${Math.round(distanceFromVenue)} meters</strong><br>
-                GPS Accuracy: <strong>±${Math.round(userLocation.accuracy)} meters</strong><br>
-                Coordinates: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}
-            `;
+        // ============ LOCATION ERROR ============
+        function onLocationError(error) {
+            let errorCode = '';
+            let errorMsg = '';
+            let steps = '';
+
+            switch(error.code) {
+                case 1: // PERMISSION_DENIED
+                    errorCode = 'PERMISSION_DENIED';
+                    errorMsg = 'You denied location access. The attendance system needs your location to verify you are at the venue.';
+                    steps = '<strong>How to fix this:</strong><br><br>' +
+                            '📱 <strong>iPhone (Safari):</strong><br>' +
+                            '1. Go to Settings → Safari → Location<br>' +
+                            '2. Select "Allow" or "Ask"<br>' +
+                            '3. Come back and tap "Try Again"<br><br>' +
+                            '📱 <strong>iPhone (Chrome):</strong><br>' +
+                            '1. Go to Settings → Chrome → Location<br>' +
+                            '2. Toggle ON<br>' +
+                            '3. Come back and tap "Try Again"<br><br>' +
+                            '🤖 <strong>Android (Chrome):</strong><br>' +
+                            '1. Tap the 🔒 icon in the address bar<br>' +
+                            '2. Tap "Permissions" → Location → Allow<br>' +
+                            '3. Tap "Try Again"<br><br>' +
+                            '🤖 <strong>Android (Samsung Internet):</strong><br>' +
+                            '1. Go to Settings → Apps → Samsung Internet → Permissions<br>' +
+                            '2. Enable Location<br>' +
+                            '3. Come back and tap "Try Again"';
+                    break;
+
+                case 2: // POSITION_UNAVAILABLE
+                    errorCode = 'POSITION_UNAVAILABLE';
+                    errorMsg = 'Unable to detect your location. Your GPS signal may be weak.';
+                    steps = '<strong>How to fix this:</strong><br><br>' +
+                            '1. Make sure Location/GPS is turned ON in phone settings<br>' +
+                            '2. Move near a window or go outdoors<br>' +
+                            '3. Turn OFF battery saver mode<br>' +
+                            '4. Enable "High Accuracy" mode:<br>' +
+                            '&nbsp;&nbsp;&nbsp;Android: Settings → Location → Mode → High Accuracy<br>' +
+                            '&nbsp;&nbsp;&nbsp;iPhone: Settings → Privacy → Location Services → ON<br>' +
+                            '5. Wait 10 seconds and tap "Try Again"';
+                    break;
+
+                case 3: // TIMEOUT
+                    errorCode = 'TIMEOUT';
+                    errorMsg = 'Location request timed out. GPS took too long to respond.';
+                    steps = '<strong>How to fix this:</strong><br><br>' +
+                            '1. Move to an area with better signal (near window/outdoors)<br>' +
+                            '2. Make sure GPS/Location is ON in phone settings<br>' +
+                            '3. Close other apps that may be using GPS<br>' +
+                            '4. Turn WiFi ON (helps with location accuracy)<br>' +
+                            '5. Wait a moment and tap "Try Again"';
+                    break;
+
+                default:
+                    errorCode = 'UNKNOWN';
+                    errorMsg = 'An unknown error occurred: ' + error.message;
+                    steps = 'Please refresh the page and try again.';
+            }
+
+            showError(errorCode, errorMsg, steps);
         }
 
-        // Show error status
-        function showError(message) {
-            statusBox.className = 'status-box status-error';
-            statusBox.innerHTML = `<p>✗ ${message}</p>`;
+        function showError(code, message, steps) {
+            document.getElementById('errorDetail').innerHTML =
+                '<strong>Error:</strong> ' + code + '<br>' + message;
+            document.getElementById('errorSteps').innerHTML = steps || '';
+            showScreen('errorScreen');
         }
 
-        // Handle form submission
-        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        // ============ RETRY ============
+        function retryLocation() {
+            showScreen('permissionScreen');
+        }
+
+        // ============ SUBMIT FORM ============
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
-            
-            const formData = {
-                name: document.getElementById('name').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                dcr: document.getElementById('dcr').value.trim() || 'N/A',
-                latitude: userLocation.lat,
-                longitude: userLocation.lng,
-                distance: Math.round(distanceFromVenue),
-                accuracy: Math.round(userLocation.accuracy),
-                timestamp: new Date().toISOString(),
-                localTime: new Date().toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }),
-                status: 'Verified'
+            submitBtn.textContent = '⏳ Submitting...';
+
+            const now = new Date();
+            const sgTime = now.toLocaleString('en-SG', { timeZone: 'Asia/Singapore' });
+
+            const data = {
+                name: document.getElementById('nameInput').value.trim(),
+                email: document.getElementById('emailInput').value.trim(),
+                dcr_number: document.getElementById('dcrInput').value.trim() || 'N/A',
+                latitude: userLat,
+                longitude: userLng,
+                distance: userDistance,
+                accuracy: gpsAccuracy,
+                timestamp_utc: now.toISOString(),
+                timestamp_sg: sgTime,
+                status: 'Verified - Within ' + MAX_DISTANCE + 'm'
             };
-            
+
             try {
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'no-cors',
+                    body: JSON.stringify(data)
                 });
-                
-                if (response.ok) {
-                    attendanceForm.classList.add('hidden');
-                    statusBox.classList.add('hidden');
-                    successMessage.classList.remove('hidden');
-                } else {
-                    throw new Error('Failed to submit attendance');
-                }
-            } catch (error) {
-                alert('Error submitting attendance. Please try again or contact the organizer.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '✓ Submit Attendance';
-            }
-        });
 
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            getUserLocation();
-        });
+                // Show success
+                document.getElementById('successName').textContent = '👤 ' + data.name;
+                document.getElementById('successEmail').textContent = '📧 ' + data.email;
+                document.getElementById('successTime').textContent = '🕐 Checked in at: ' + sgTime;
+                showScreen('successScreen');
+
+            } catch (err) {
+                alert('Error submitting attendance: ' + err.message + '\n\nPlease try again or contact the organizer.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Submit Attendance';
+            }
+        }
     </script>
 </body>
 </html>
