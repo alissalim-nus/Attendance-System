@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seminar Attendance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .venue-info {
+            background: #f0f6ff;
+            border: 1px solid #c8ddf5;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .venue-info strong {
+            color: #0078d4;
+        }
+
+        /* Permission Screen */
+        .permission-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .permission-icon {
+            font-size: 60px;
+            margin-bottom: 16px;
+        }
+
+        .permission-screen h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .permission-screen p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .permission-note {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: #795548;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,120,212,0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-retry {
+            background: #f5f5f5;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            text-align: center;
+            padding: 30px 0;
+            display: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0e0e0;
+            border-top: 4px solid #0078d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-screen p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .loading-tips {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #888;
+            text-align: left;
+        }
+
+        /* Error Screen */
+        .error-screen {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .error-icon {
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+
+        .error-screen h2 {
+            color: #d32f2f;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .error-details {
+            background: #fff3f3;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 14px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #c62828;
+            text-align: left;
+        }
+
+        .error-fix {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 14px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #333;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        /* Too Far Screen */
+        .toofar-screen {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .toofar-screen h2 {
+            color: #e65100;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .distance-display {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .distance-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e65100;
+        }
+
+        .distance-label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Form Screen */
+        .form-screen {
+            display: none;
+        }
+
+        .verified-badge {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .form-group label span {
+            color: #d32f2f;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        .form-group .optional {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 12px;
+        }
+
+        .success-screen h2 {
+            color: #2e7d32;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .success-details {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* Submitting overlay */
+        .submitting-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .submitting-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .submitting-box p {
+            margin-top: 12px;
+            font-size: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📋 Seminar Attendance</h1>
+        <p>National University Centre for Oral Health</p>
+    </div>
+
+    <div class="content">
+        <div class="venue-info">
+            <strong>📍 Venue:</strong> 9 Lower Kent Ridge Rd <br>
+            National University Centre for Oral Health, S(119085)<br><br>
+            <strong>✓</strong> Must be within <strong>500 meters</strong> to check in
+        </div>
+
+        <!-- Screen 1: Permission Request -->
+        <div class="permission-screen" id="permissionScreen">
+            <div class="permission-icon">📍</div>
+            <h2>Location Verification Required</h2>
+            <p>To verify your onsite attendance, we need to check your GPS location. Please allow location access when prompted.</p>
+
+            <div class="permission-note">
+                ⚠️ <strong>A browser popup will appear</strong> asking for location permission. Please tap <strong>"Allow"</strong> to continue.
+            </div>
+
+            <button class="btn btn-primary" onclick="requestLocation()">
+                📍 Enable Location & Check In
+            </button>
+        </div>
+
+        <!-- Screen 2: Loading -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="spinner"></div>
+            <p>📡 Detecting your location...</p>
+            <div class="loading-tips">
+                💡 Tips for better GPS signal:<br>
+                • Move near a window or go outdoors<br>
+                • Make sure Location/GPS is turned ON<br>
+                • Disable battery saver mode<br>
+                • Wait 10-15 seconds
+            </div>
+        </div>
+
+        <!-- Screen 3: Error -->
+        <div class="error-screen" id="errorScreen">
+            <div class="error-icon">⚠️</div>
+            <h2>Location Access Failed</h2>
+            <div class="error-details" id="errorDetails"></div>
+            <div class="error-fix" id="errorFix"></div>
+            <button class="btn btn-primary" onclick="requestLocation()">🔄 Try Again</button>
+            <button class="btn btn-retry" onclick="showPermission()">← Back</button>
+        </div>
+
+        <!-- Screen 4: Too Far -->
+        <div class="toofar-screen" id="toofarScreen">
+            <div class="error-icon">📏</div>
+            <h2>You're Too Far Away</h2>
+            <p style="color:#666; font-size:14px; margin:8px 0;">You must be within 500 meters of the venue.</p>
+            <div class="distance-display">
+                <div class="distance-number" id="distanceDisplay">--</div>
+                <div class="distance-label">meters from venue</div>
+            </div>
+            <button class="btn btn-primary" onclick="requestLocation()">📍 Check Again</button>
+            <button class="btn btn-retry" onclick="showPermission()">← Back</button>
+        </div>
+
+        <!-- Screen 5: Attendance Form -->
+        <div class="form-screen" id="formScreen">
+            <div class="verified-badge">
+                ✅ Location Verified — You are within range!
+            </div>
+
+            <form onsubmit="submitAttendance(event)">
+                <div class="form-group">
+                    <label>Name <span>*</span></label>
+                    <input type="text" id="nameInput" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label>Email <span>*</span></label>
+                    <input type="email" id="emailInput" required placeholder="Enter your email address">
+                </div>
+
+                <div class="form-group">
+                    <label>DCR Number <span class="optional">(If applicable)</span></label>
+                    <input type="text" id="dcrInput" placeholder="Enter your DCR number">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    ✅ Submit Attendance
+                </button>
+            </form>
+        </div>
+
+        <!-- Screen 6: Success -->
+        <div class="success-screen" id="successScreen">
+            <div class="success-icon">🎉</div>
+            <h2>Attendance Recorded!</h2>
+            <p style="color:#666; font-size:14px;">Your attendance has been successfully submitted.</p>
+            <div class="success-details" id="successDetails"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Submitting Overlay -->
+<div class="submitting-overlay" id="submittingOverlay">
+    <div class="submitting-box">
+        <div class="spinner"></div>
+        <p>Submitting your attendance...</p>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // CONFIGURATION - UPDATE THESE VALUES
+    // ============================================================
+    const VENUE_LAT = 1.2933;
+    const VENUE_LNG = 103.7806;
+    const MAX_DISTANCE = 500; // Maximum allowed distance in meters
+    const WEBHOOK_URL = 'https://default5ba5ef5e31094e7785bdcfeb0d347e.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b0f72553108245468176764ac7702100/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=LyFiFrxbZWpIy7lJ2VLCcH1EfIkix_Zp0kNVKiKyrOU'; // <-- PASTE YOUR WEBHOOK URL HERE
+    // ============================================================
+
+    let userLat = null;
+    let userLng = null;
+    let userAccuracy = null;
+    let userDistance = null;
+
+    // Screen management
+    function hideAllScreens() {
+        document.getElementById('permissionScreen').style.display = 'none';
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('errorScreen').style.display = 'none';
+        document.getElementById('toofarScreen').style.display = 'none';
+        document.getElementById('formScreen').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'none';
+    }
+
+    function showPermission() {
+        hideAllScreens();
+        document.getElementById('permissionScreen').style.display = 'block';
+    }
+
+    // Calculate distance between two GPS points (Haversine formula)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371000; // Earth's radius in meters
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    // Request GPS location
+    function requestLocation() {
+        hideAllScreens();
+        document.getElementById('loadingScreen').style.display = 'block';
+
+        if (!navigator.geolocation) {
+            showError('NOT_SUPPORTED', 'Your browser does not support GPS location.');
+            return;
+        }
+
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 30000,
+            maximumAge: 0
+        };
+
+        navigator.geolocation.getCurrentPosition(onLocationSuccess, onLocationError, options);
+    }
+
+    function onLocationSuccess(position) {
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+        userAccuracy = position.coords.accuracy;
+        userDistance = calculateDistance(userLat, userLng, VENUE_LAT, VENUE_LNG);
+
+        if (userDistance <= MAX_DISTANCE) {
+            // Within range - show form
+            hideAllScreens();
+            document.getElementById('formScreen').style.display = 'block';
+        } else {
+            // Too far - show distance
+            hideAllScreens();
+            document.getElementById('toofarScreen').style.display = 'block';
+            document.getElementById('distanceDisplay').textContent = Math.round(userDistance);
+        }
+    }
+
+    function onLocationError(error) {
+        let errorType = '';
+        let errorMsg = '';
+
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                errorType = 'PERMISSION_DENIED';
+                errorMsg = 'Location permission was denied.';
+                break;
+            case error.POSITION_UNAVAILABLE:
+                errorType = 'POSITION_UNAVAILABLE';
+                errorMsg = 'Location information is unavailable.';
+                break;
+            case error.TIMEOUT:
+                errorType = 'TIMEOUT';
+                errorMsg = 'Location request timed out.';
+                break;
+            default:
+                errorType = 'UNKNOWN';
+                errorMsg = 'An unknown error occurred.';
+        }
+
+        showError(errorType, errorMsg);
+    }
+
+    function showError(type, message) {
+        hideAllScreens();
+        document.getElementById('errorScreen').style.display = 'block';
+        document.getElementById('errorDetails').innerHTML = '<strong>Error:</strong> ' + message;
+
+        let fix = '';
+        switch (type) {
+            case 'PERMISSION_DENIED':
+                fix = '<strong>How to fix:</strong><br><br>' +
+                      '<strong>iPhone Safari:</strong><br>' +
+                      '1. Go to Settings → Safari → Location<br>' +
+                      '2. Select "Allow" or "Ask"<br>' +
+                      '3. Reload this page<br><br>' +
+                      '<strong>iPhone Chrome:</strong><br>' +
+                      '1. Go to Settings → Chrome → Location<br>' +
+                      '2. Toggle ON<br>' +
+                      '3. Reload this page<br><br>' +
+                      '<strong>Android Chrome:</strong><br>' +
+                      '1. Tap the lock icon 🔒 in address bar<br>' +
+                      '2. Tap "Permissions"<br>' +
+                      '3. Enable "Location"<br>' +
+                      '4. Reload this page<br><br>' +
+                      '<strong>Samsung Internet:</strong><br>' +
+                      '1. Tap ≡ menu → Settings<br>' +
+                      '2. Sites and downloads → Site permissions<br>' +
+                      '3. Enable Location<br>' +
+                      '4. Reload this page';
+                break;
+            case 'POSITION_UNAVAILABLE':
+                fix = '<strong>How to fix:</strong><br><br>' +
+                      '1. Turn ON GPS/Location in phone Settings<br>' +
+                      '2. Enable "High Accuracy" or "Precise" mode<br>' +
+                      '3. Move near a window or go outdoors<br>' +
+                      '4. Turn OFF WiFi and use mobile data<br>' +
+                      '5. Try again';
+                break;
+            case 'TIMEOUT':
+                fix = '<strong>How to fix:</strong><br><br>' +
+                      '1. Move near a window or go outdoors<br>' +
+                      '2. Disable battery saver mode<br>' +
+                      '3. Make sure GPS is turned ON<br>' +
+                      '4. Wait a moment and try again<br>' +
+                      '5. Try restarting your browser';
+                break;
+            case 'NOT_SUPPORTED':
+                fix = '<strong>How to fix:</strong><br><br>' +
+                      '1. Update your browser to the latest version<br>' +
+                      '2. Try using Chrome or Safari<br>' +
+                      '3. Make sure you are using HTTPS';
+                break;
+            default:
+                fix = 'Please try again or use a different browser.';
+        }
+
+        document.getElementById('errorFix').innerHTML = fix;
+    }
+
+    // Submit attendance
+    async function submitAttendance(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('nameInput').value.trim();
+        const email = document.getElementById('emailInput').value.trim();
+        const dcr = document.getElementById('dcrInput').value.trim();
+
+        if (!name || !email) {
+            alert('Please fill in your Name and Email.');
+            return;
+        }
+
+        // Check webhook URL
+        if (WEBHOOK_URL === 'https://default5ba5ef5e31094e7785bdcfeb0d347e.82.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/b0f72553108245468176764ac7702100/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=LyFiFrxbZWpIy7lJ2VLCcH1EfIkix_Zp0kNVKiKyrOU') {
+            alert('Error: Webhook URL not configured. Please contact the organizer.');
+            return;
+        }
+
+        // Show submitting overlay
+        document.getElementById('submittingOverlay').style.display = 'flex';
+        document.getElementById('submitBtn').disabled = true;
+
+        const now = new Date();
+        const sgTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+
+        const data = {
+            name: name,
+            email: email,
+            dcr_number: dcr || 'N/A',
+            latitude: String(userLat),
+            longitude: String(userLng),
+            distance: String(Math.round(userDistance)),
+            accuracy: String(Math.round(userAccuracy)),
+            timestamp: now.toISOString(),
+            timestamp_sgt: sgTime.toISOString().replace('T', ' ').substring(0, 19) + ' SGT',
+            status: 'Verified'
+        };
+
+        let success = false;
+
+        // Method 1: Standard fetch with cors
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (response.ok || response.status === 202) {
+                success = true;
+            }
+        } catch (e) {
+            console.log('Method 1 (cors) failed:', e.message);
+        }
+
+        // Method 2: no-cors mode (if Method 1 fails)
+        if (!success) {
+            try {
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    mode: 'no-cors'
+                });
+                // no-cors always returns opaque response, assume success
+                success = true;
+            } catch (e) {
+                console.log('Method 2 (no-cors) failed:', e.message);
+            }
+        }
+
+        // Method 3: Beacon API (last resort)
+        if (!success) {
+            try {
+                const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+                navigator.sendBeacon(WEBHOOK_URL, blob);
+                success = true;
+            } catch (e) {
+                console.log('Method 3 (beacon) failed:', e.message);
+            }
+        }
+
+        // Hide overlay
+        document.getElementById('submittingOverlay').style.display = 'none';
+
+        if (success) {
+            hideAllScreens();
+            document.getElementById('successScreen').style.display = 'block';
+            document.getElementById('successDetails').innerHTML =
+                '<strong>Name:</strong> ' + name + '<br>' +
+                '<strong>Email:</strong> ' + email + '<br>' +
+                (dcr ? '<strong>DCR Number:</strong> ' + dcr + '<br>' : '') +
+                '<strong>Time:</strong> ' + sgTime.toISOString().replace('T', ' ').substring(0, 19) + ' SGT<br>' +
+                '<strong>Distance:</strong> ' + Math.round(userDistance) + 'm from venue';
+        } else {
+            alert('Error submitting attendance. Please try again or contact the organizer.');
+            document.getElementById('submitBtn').disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>
